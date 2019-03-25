@@ -9,10 +9,11 @@
 class SaperBoard : public QAbstractTableModel
 {
     Q_OBJECT
-    Q_PROPERTY(QSize size READ size WRITE setSize setMines NOTIFY sizeChanged minesChanged)
+    Q_PROPERTY(QSize qSize READ qSize WRITE setSize NOTIFY sizeChanged )
+    Q_PROPERTY(int numberOfMines WRITE setMines NOTIFY minesChanged)
 private:
     int numberOfMines;
-    QSize size;
+    QSize qSize;
     std::vector<std::vector<int> > saperBoard;
 
     void initializeSaperBoard(int width, int height);
@@ -23,20 +24,21 @@ private:
 public:
     SaperBoard(int width = 10, int height = 10, int numberofMines = 10){
         this->numberOfMines = numberofMines;
-        size = QSize(width,height);
-        this->initializeSaperBoard(this->size.width(), this->size.height());
+        qSize.setWidth(width);
+        qSize.setHeight(height);
+        this->initializeSaperBoard(this->qSize.width(), this->qSize.height());
         this->setUpMines(this -> numberOfMines);
     }
-    SaperBoard(QSize s, int numberOfMines, QObject *parent = 0);
+    SaperBoard(QSize s, int numberOfMines, QObject *parent = nullptr);
     ~SaperBoard(){}
 
-    //int getWidth(){return this->width;}
-    //int getHeight(){return this->height;}
     int getNumberOfMines(){return this->numberOfMines;}
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    QModelIndex index(int r, int c, const QModelIndex &par = QModelIndex()) const;
+    QModelIndex parent(const QModelIndex &idx) const;
 
 public slots:
     void setSize(const QSize &s);

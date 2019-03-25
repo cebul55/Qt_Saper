@@ -25,8 +25,8 @@ void SaperBoard::setUpMines(int numberOfMines)
     int randX, randY;
 
     while(numberOfMines > 0){
-        randX = std::rand() % this->size.width();
-        randY = std::rand() % this->size.height();
+        randX = std::rand() % this->qSize.width();
+        randY = std::rand() % this->qSize.height();
 
         if(saperBoard[randX][randY] != (MINE)){
             this->saperBoard[randX][randY] = (MINE);
@@ -36,8 +36,8 @@ void SaperBoard::setUpMines(int numberOfMines)
     this->setUpNeighbours();
 
 
-        for(int i = 0; i < size.width(); i++){
-            for(int j = 0; j < size.height(); j++){
+        for(int i = 0; i < qSize.width(); i++){
+            for(int j = 0; j < qSize.height(); j++){
                 std::cout<<this->saperBoard[i][j]<<"\t";
             }
             std::cout<<"\n";
@@ -46,8 +46,8 @@ void SaperBoard::setUpMines(int numberOfMines)
 
 void SaperBoard::setUpNeighbours()
 {
-    for(int i = 0; i < size.width(); i++){
-        for(int j = 0; j < size.height(); j++){
+    for(int i = 0; i < qSize.width(); i++){
+        for(int j = 0; j < qSize.height(); j++){
             if(this->saperBoard[i][j] == MINE){
                 this->countNeighbours(i,j);
             }
@@ -59,7 +59,7 @@ void SaperBoard::countNeighbours(int x, int y)
 {
     for(int i = x-1; i <= x+1; i++){
         for(int j = y-1; j <= y+1; j++){
-            if(i >= 0 && i < this->size.width() && j >= 0 && j < this->size.height()){
+            if(i >= 0 && i < this->qSize.width() && j >= 0 && j < this->qSize.height()){
                 if(saperBoard[i][j]!= (MINE) ){
                     saperBoard[i][j]++;
                 }
@@ -71,33 +71,53 @@ void SaperBoard::countNeighbours(int x, int y)
 SaperBoard::SaperBoard(QSize s, int numberOfMines, QObject *parent) :
     QAbstractTableModel(parent),
     numberOfMines(numberOfMines),
-    size(s){
-        this->initializeSaperBoard(this->size.width(), this->size.height());
+    qSize(s){
+        this->initializeSaperBoard(this->qSize.width(), this->qSize.height());
         this->setUpMines(this -> numberOfMines);
     }
 
 int SaperBoard::rowCount(const QModelIndex &parent) const
 {
-    return this->size.height();
+      return parent.isValid() ? 0 : qSize.height();
 }
 
 int SaperBoard::columnCount(const QModelIndex &parent) const
 {
-    return this->size.width();
+    return parent.isValid() ? 0 : qSize.width();
 }
 
 QVariant SaperBoard::data(const QModelIndex &index, int role) const
 {
-    return index.row();
+    if (role == Qt::DisplayRole)
+        {
+//           return QString("Row%1, Column%2")
+//                       .arg(index.row() + 1)
+//                       .arg(index.column() +1);
+        return (this->saperBoard[index.row()][index.column()]);
+        }
+        return QVariant();
+}
+
+QModelIndex SaperBoard::index(int row, int column, const QModelIndex &parent) const
+{
+    if (parent.isValid()) return QModelIndex();
+      if (row >= qSize.height() || column >= qSize.width() || column < 0 || row < 0)
+        return QModelIndex();
+      return createIndex(row, column, nullptr);
+}
+
+QModelIndex SaperBoard::parent(const QModelIndex &idx) const
+{
+    return QModelIndex();
 }
 
 void SaperBoard::setSize(const QSize &s)
 {
-    if (size == s) return;
+    if (qSize == s) return;
     beginResetModel();
-    this->size = s;
+    this->qSize = s;
     endResetModel();
-    emit sizeChanged(size);
+    emit sizeChanged(qSize);
 }
 
 void SaperBoard::setMines(const int &mines){

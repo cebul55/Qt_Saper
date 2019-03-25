@@ -6,10 +6,12 @@
 #include <QWidget>
 #include <QGraphicsView>
 #include <QGraphicsItem>
+#include <QTableView>
 #include <QCursor>
 #include <QPushButton>
 #include <QLabel>
 #include <QLCDNumber>
+
 
 
 namespace Ui {
@@ -30,7 +32,6 @@ private slots:
 private:
     Ui::Saper *ui;
     SaperBoard *saperBoard;
-    QGraphicsView *graphicSaperBoard;
 
 };
 

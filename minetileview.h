@@ -8,8 +8,9 @@ enum TileStatus{
     hidden, flagged, open
 };
 
-class MineTileView : public QGraphicsRectItem
+class MineTileView //: public QGraphicsRectItem
 {
+    //Q_OBJECT
 private:
     TileStatus status = hidden;
 public:

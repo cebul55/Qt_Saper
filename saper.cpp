@@ -14,7 +14,13 @@ Saper::Saper(QWidget *parent) :
 
 //    scene.addItem(new QGraphicsItem());
 //    ui->gridLayout->addWidget(this->graphicSaperBoard,0,0,1,1);
-
+    saperBoard = new SaperBoard;
+    ui->tableView->setModel(saperBoard);
+//    ui->tableView->resizeRowsToContents();
+//    ui->tableView->resizeColumnsToContents();
+    ui->tableView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    ui->tableView->setShowGrid(true);
+    ui->tableView->show();
 }
 
 Saper::~Saper()
